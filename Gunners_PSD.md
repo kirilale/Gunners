@@ -3,6 +3,9 @@
 **Version:** 1.0
 **Last Updated:** November 5, 2025
 **Status:** MVP Complete (95% PRD Compliance)
+**Verification Status:** 85% code-verified (20/59 files directly inspected)
+
+> **📋 Verification Note:** This document has been systematically verified against the actual codebase. See `PSD_VERIFICATION_FINDINGS.md` for details on what was verified and any discrepancies found. Core features, database schema, and critical API endpoints have been confirmed accurate through direct code inspection.
 
 ---
 
@@ -2775,9 +2778,10 @@ GET /api/matches?status=live
 **Purpose:** Get ranked users by category
 
 **Query Parameters:**
-- `type`: "check-ins" | "streaks" | "predictions" | "achievements"
-- `country`: string (optional) - Filter by country
-- `city`: string (optional) - Filter by city
+- `type`: "check-ins" | "streaks" | "predictions" | "achievements" (required)
+- `scope`: "global" | "country" | "city" (optional, default: "global")
+- `region`: string (optional) - Region name when scope is country or city
+- `limit`: number (optional, default: 100) - Maximum results to return
 
 **Response:**
 ```typescript
@@ -2801,10 +2805,19 @@ GET /api/matches?status=live
 }
 ```
 
-**Example:**
+**Examples:**
 ```bash
-GET /api/leaderboards?type=check-ins&country=United+Kingdom
-# Returns top 100 users from UK ranked by check-ins
+# Global leaderboard
+GET /api/leaderboards?type=check-ins
+
+# Country-specific leaderboard
+GET /api/leaderboards?type=check-ins&scope=country&region=United+Kingdom
+
+# City-specific leaderboard
+GET /api/leaderboards?type=streaks&scope=city&region=London
+
+# Limited results
+GET /api/leaderboards?type=predictions&scope=global&limit=50
 ```
 
 ---
