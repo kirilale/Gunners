@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth/session";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+import { validateUsername } from "@/lib/profanity-filter";
 
 const profileSchema = z.object({
   username: z.string().min(3).max(20).optional(),
@@ -41,8 +42,18 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const data = profileSchema.parse(body);
 
-    // Check if username is taken
+    // Check if username is valid
     if (data.username) {
+      // Check for profanity
+      const profanityCheck = validateUsername(data.username);
+      if (!profanityCheck.valid) {
+        return NextResponse.json(
+          { error: profanityCheck.error },
+          { status: 400 }
+        );
+      }
+
+      // Check if username is taken
       const existing = await prisma.user.findFirst({
         where: {
           username: data.username,

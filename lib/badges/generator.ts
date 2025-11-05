@@ -55,17 +55,27 @@ export async function generateBadgesForMatch(matchId: string) {
       },
     });
 
-    // Send email notification
+    // Send email notification (if user has enabled badge notifications)
     try {
-      await emailService.sendBadgeNotification(
-        checkIn.user.email,
-        checkIn.user.username,
-        {
-          opponent: match.opponentName,
-          score: `${match.arsenalScore}-${match.opponentScore}`,
-          date: match.matchDate.toLocaleDateString(),
-        }
-      );
+      const userSettings = await prisma.userSettings.findUnique({
+        where: { userId: checkIn.userId },
+        select: {
+          emailNotifications: true,
+        },
+      });
+
+      const emailNotifications = userSettings?.emailNotifications as any;
+      if (emailNotifications?.badgeEarned !== false) {
+        await emailService.sendBadgeNotification(
+          checkIn.user.email,
+          checkIn.user.displayName || checkIn.user.username,
+          {
+            opponent: match.opponentName,
+            score: `${match.arsenalScore}-${match.opponentScore}`,
+            date: match.matchDate.toLocaleDateString(),
+          }
+        );
+      }
     } catch (error) {
       console.error("Failed to send badge notification email:", error);
     }

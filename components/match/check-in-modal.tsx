@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LocationAutocomplete } from "@/components/ui/location-autocomplete";
 
 interface CheckInModalProps {
   matchId: string;
@@ -19,6 +20,8 @@ export function CheckInModal({ matchId, opponent, onClose, onSuccess }: CheckInM
     locationCountry: "",
     locationCity: "",
     statusMessage: "",
+    locationLat: undefined as number | undefined,
+    locationLng: undefined as number | undefined,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,28 +66,32 @@ export function CheckInModal({ matchId, opponent, onClose, onSuccess }: CheckInM
               <label htmlFor="country" className="block text-sm font-medium mb-2">
                 Country <span className="text-red-500">*</span>
               </label>
-              <Input
+              <LocationAutocomplete
                 id="country"
-                type="text"
+                type="country"
                 placeholder="United Kingdom"
                 value={formData.locationCountry}
-                onChange={(e) => setFormData({ ...formData, locationCountry: e.target.value })}
+                onChange={(value) => setFormData({ ...formData, locationCountry: value })}
                 required
               />
+              <p className="text-xs text-muted-foreground mt-1">Start typing to search</p>
             </div>
 
             <div>
               <label htmlFor="city" className="block text-sm font-medium mb-2">
                 City <span className="text-red-500">*</span>
               </label>
-              <Input
+              <LocationAutocomplete
                 id="city"
-                type="text"
+                type="city"
                 placeholder="London"
                 value={formData.locationCity}
-                onChange={(e) => setFormData({ ...formData, locationCity: e.target.value })}
+                onChange={(value, lat, lng) =>
+                  setFormData({ ...formData, locationCity: value, locationLat: lat, locationLng: lng })
+                }
                 required
               />
+              <p className="text-xs text-muted-foreground mt-1">Start typing to search</p>
             </div>
 
             <div>

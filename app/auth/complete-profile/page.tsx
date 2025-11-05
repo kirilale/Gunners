@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LocationAutocomplete } from "@/components/ui/location-autocomplete";
 
 export default function CompleteProfilePage() {
   const router = useRouter();
@@ -90,27 +91,29 @@ export default function CompleteProfilePage() {
                 <label htmlFor="locationCountry" className="block text-sm font-medium mb-2">
                   Country <span className="text-red-500">*</span>
                 </label>
-                <Input
+                <LocationAutocomplete
                   id="locationCountry"
-                  type="text"
+                  type="country"
                   placeholder="United Kingdom"
                   value={formData.locationCountry}
-                  onChange={(e) => setFormData({ ...formData, locationCountry: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, locationCountry: value })}
                   required
                 />
+                <p className="text-xs text-muted-foreground mt-1">Start typing to search</p>
               </div>
 
               <div>
                 <label htmlFor="locationCity" className="block text-sm font-medium mb-2">
                   City
                 </label>
-                <Input
+                <LocationAutocomplete
                   id="locationCity"
-                  type="text"
+                  type="city"
                   placeholder="London"
                   value={formData.locationCity}
-                  onChange={(e) => setFormData({ ...formData, locationCity: e.target.value })}
+                  onChange={(value) => setFormData({ ...formData, locationCity: value })}
                 />
+                <p className="text-xs text-muted-foreground mt-1">Start typing to search</p>
               </div>
 
               <div>

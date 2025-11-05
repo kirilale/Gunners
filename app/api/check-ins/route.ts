@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if check-in window is open
-    if (!isCheckInWindowOpen(match.kickoffTime)) {
+    if (!isCheckInWindowOpen(match.kickoffTime, match.matchStatus, match.updatedAt)) {
       return NextResponse.json(
         { error: "Check-in window is not open" },
         { status: 400 }

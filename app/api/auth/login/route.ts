@@ -16,7 +16,38 @@ export async function POST(request: NextRequest) {
     // Check if user exists, if not create them
     let user = await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        deletedAt: true,
+      },
     });
+
+    // Handle soft-deleted accounts
+    if (user?.deletedAt) {
+      const deletedTime = user.deletedAt.getTime();
+      const now = Date.now();
+      const hoursPassed = (now - deletedTime) / (1000 * 60 * 60);
+
+      if (hoursPassed <= 24) {
+        // Within 24-hour grace period - offer recovery
+        return NextResponse.json({
+          success: false,
+          requiresRecovery: true,
+          message: "This account is scheduled for deletion. Would you like to recover it?",
+          hoursRemaining: Math.round(24 - hoursPassed),
+          email: user.email,
+        }, { status: 403 });
+      } else {
+        // Beyond 24 hours - should be deleted by cron job
+        // Treat as if user doesn't exist
+        return NextResponse.json(
+          { error: "Account has been permanently deleted." },
+          { status: 410 } // 410 Gone
+        );
+      }
+    }
 
     if (!user) {
       // Create new user - they'll complete profile after verification

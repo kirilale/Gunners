@@ -117,6 +117,30 @@ export default function SettingsPage() {
     }
   };
 
+  const handleExportData = async () => {
+    try {
+      const response = await fetch("/api/user/export");
+
+      if (!response.ok) {
+        throw new Error("Failed to export data");
+      }
+
+      // Download the JSON file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `arsenal-fan-data-${Date.now()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to export data:", error);
+      setSaveMessage("Failed to export data. Please try again.");
+    }
+  };
+
   const updateEmailNotification = (key: string, value: boolean) => {
     if (!settings) return;
     setSettings({
@@ -451,6 +475,30 @@ export default function SettingsPage() {
             {saving ? "Saving..." : "Save Settings"}
           </Button>
         </div>
+
+        {/* Data & Privacy */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Data & Privacy</CardTitle>
+            <CardDescription>Manage your personal data and GDPR rights</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Download My Data</h4>
+                <p className="text-sm text-muted-foreground">
+                  Export all your data in JSON format (GDPR Article 15)
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleExportData}
+              >
+                Download Data
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Danger Zone */}
         <Card className="border-red-200 mb-12">

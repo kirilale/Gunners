@@ -40,14 +40,44 @@ export function getTimeUntilMatch(matchDate: Date | string): string {
 
 /**
  * Check if check-in window is open
+ * PRD: Opens 5 mins before kickoff, stays open during match, closes 5 mins after FT
  */
-export function isCheckInWindowOpen(matchDate: Date | string): boolean {
-  const d = typeof matchDate === 'string' ? new Date(matchDate) : matchDate;
+export function isCheckInWindowOpen(
+  kickoffTime: Date | string,
+  matchStatus?: string,
+  matchFinishedAt?: Date | string
+): boolean {
+  const kickoff = typeof kickoffTime === 'string' ? new Date(kickoffTime) : kickoffTime;
   const now = new Date();
-  const fiveMinsBefore = new Date(d.getTime() - 5 * 60 * 1000);
-  const fiveMinsAfter = new Date(d.getTime() + (90 + 5 + 5) * 60 * 1000); // 90 min match + 5 min after
+  const fiveMinsBefore = new Date(kickoff.getTime() - 5 * 60 * 1000);
 
-  return now >= fiveMinsBefore && now <= fiveMinsAfter;
+  // Check-in hasn't opened yet (before 5 mins before kickoff)
+  if (now < fiveMinsBefore) {
+    return false;
+  }
+
+  // If no match status provided, use time-based fallback (assume 2-hour max)
+  if (!matchStatus) {
+    const maxWindowEnd = new Date(kickoff.getTime() + 120 * 60 * 1000);
+    return now <= maxWindowEnd;
+  }
+
+  // If match hasn't finished, window is still open
+  if (matchStatus !== 'FT' && matchStatus !== 'AET' && matchStatus !== 'PEN') {
+    return true;
+  }
+
+  // Match has finished - check if within 5-minute grace period
+  if (matchFinishedAt) {
+    const finishedTime = typeof matchFinishedAt === 'string'
+      ? new Date(matchFinishedAt)
+      : matchFinishedAt;
+    const fiveMinsAfterFT = new Date(finishedTime.getTime() + 5 * 60 * 1000);
+    return now <= fiveMinsAfterFT;
+  }
+
+  // Fallback: If match is FT but no finishedAt time, close window
+  return false;
 }
 
 /**

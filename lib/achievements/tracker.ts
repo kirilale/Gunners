@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { emailService } from "@/services/email/resend";
 
 export type AchievementType =
   // Attendance
@@ -215,6 +216,40 @@ export async function checkAndAwardAchievements(userId: string) {
       });
 
       console.log(`Achievement unlocked for user ${userId}: ${achievement.name}`);
+
+      // Send email notification (if user has enabled achievement notifications)
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            email: true,
+            username: true,
+            displayName: true,
+            userSettings: {
+              select: {
+                emailNotifications: true,
+              },
+            },
+          },
+        });
+
+        if (user) {
+          const emailNotifications = user.userSettings?.emailNotifications as any;
+          if (emailNotifications?.achievementUnlocked !== false) {
+            await emailService.sendAchievementNotification(
+              user.email,
+              user.displayName || user.username,
+              {
+                name: achievement.name,
+                description: achievement.description,
+                rarity: achievement.rarity,
+              }
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Failed to send achievement notification email:", error);
+      }
     }
   }
 }
