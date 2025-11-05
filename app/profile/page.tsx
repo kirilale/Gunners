@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { BadgeGallery } from "@/components/profile/badge-gallery";
+import { CheckInHistory } from "@/components/profile/check-in-history";
+import { AchievementShowcase } from "@/components/profile/achievement-showcase";
 
 interface UserProfile {
   user: {
@@ -240,6 +242,16 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Achievements */}
+          <div className="mb-6">
+            <AchievementShowcase limit={6} />
+          </div>
+
+          {/* Check-In History */}
+          <div className="mb-6">
+            <CheckInHistory limit={10} />
+          </div>
 
           {/* Badge Gallery */}
           <div className="mb-6">

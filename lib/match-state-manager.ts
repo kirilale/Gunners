@@ -217,19 +217,35 @@ export class MatchStateManager {
       if (!liveData) return;
 
       const isHome = liveData.teams.home.id === 42;
+      const newStatus = liveData.fixture.status.short;
+      const oldStatus = match.matchStatus;
+
+      // Check if match just finished
+      const finishedStatuses = ['FT', 'AET', 'PEN'];
+      const justFinished =
+        !finishedStatuses.includes(oldStatus) &&
+        finishedStatuses.includes(newStatus);
+
+      const updateData: any = {
+        matchStatus: newStatus,
+        arsenalScore: isHome ? liveData.goals.home : liveData.goals.away,
+        opponentScore: isHome ? liveData.goals.away : liveData.goals.home,
+        result: this.calculateResult(
+          isHome ? liveData.goals.home : liveData.goals.away,
+          isHome ? liveData.goals.away : liveData.goals.home,
+          newStatus
+        ),
+      };
+
+      // Set matchFinishedAt timestamp when match first becomes finished
+      if (justFinished) {
+        updateData.matchFinishedAt = new Date();
+        console.log(`🏁 Match finished at: ${updateData.matchFinishedAt.toISOString()}`);
+      }
 
       await prisma.match.update({
         where: { id: match.id },
-        data: {
-          matchStatus: liveData.fixture.status.short,
-          arsenalScore: isHome ? liveData.goals.home : liveData.goals.away,
-          opponentScore: isHome ? liveData.goals.away : liveData.goals.home,
-          result: this.calculateResult(
-            isHome ? liveData.goals.home : liveData.goals.away,
-            isHome ? liveData.goals.away : liveData.goals.home,
-            liveData.fixture.status.short
-          ),
-        },
+        data: updateData,
       });
 
       console.log(`📡 Synced live data: ${liveData.goals.home} - ${liveData.goals.away}`);

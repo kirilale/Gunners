@@ -73,6 +73,7 @@ model Match {
   matchEvents         Json?    // Array of goals, cards, substitutions
   checkInOpenTime     DateTime?
   checkInCloseTime    DateTime?
+  matchFinishedAt     DateTime? // Timestamp when match status became FT/AET/PEN
   badgesGenerated     Boolean  @default(false)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
