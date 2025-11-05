@@ -25,6 +25,9 @@ const BADGE_TYPE_DISPLAY: Record<string, { icon: string; label: string; color: s
   DERBY: { icon: "🔥", label: "Derby", color: "bg-red-100" },
   CLEAN_SHEET: { icon: "🧤", label: "Clean Sheet", color: "bg-blue-100" },
   HIGH_SCORING: { icon: "⚽", label: "High Scoring", color: "bg-orange-100" },
+  EUROPEAN: { icon: "⭐", label: "European Night", color: "bg-blue-600 text-white" },
+  CUP_FINAL: { icon: "🏆", label: "Cup Final", color: "bg-yellow-600 text-white" },
+  VICTORY: { icon: "✅", label: "Victory", color: "bg-green-600 text-white" },
   COMEBACK: { icon: "💪", label: "Comeback", color: "bg-purple-100" },
   TROPHY: { icon: "🏆", label: "Trophy", color: "bg-yellow-100" },
 };

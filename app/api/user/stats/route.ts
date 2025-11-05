@@ -36,8 +36,14 @@ export async function GET(request: NextRequest) {
     const lossesWithUser = matchesWithUser.filter((m: any) => m.result === "LOSS").length;
 
     const totalWithUser = winsWithUser + drawsWithUser + lossesWithUser;
+    
+    // Only calculate lucky charm if user has at least 10 completed matches
+    // This prevents misleading percentages from small sample sizes
+    const MINIMUM_MATCHES_FOR_LUCKY_CHARM = 10;
     const luckyCharmPercentage =
-      totalWithUser > 0 ? (winsWithUser / totalWithUser) * 100 : null;
+      totalWithUser >= MINIMUM_MATCHES_FOR_LUCKY_CHARM 
+        ? (winsWithUser / totalWithUser) * 100 
+        : null;
 
     // Update stats
     await prisma.userStats.update({

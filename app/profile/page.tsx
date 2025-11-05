@@ -188,17 +188,19 @@ export default function ProfilePage() {
           {/* Lucky Charm */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Lucky Charm Status</CardTitle>
+              <CardTitle>🍀 Lucky Charm Status</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-6">
                 <div className="text-6xl font-bold mb-4">
                   {stats.luckyCharmPercentage !== null
                     ? `${stats.luckyCharmPercentage?.toFixed(1)}%`
-                    : "N/A"}
+                    : "🔒"}
                 </div>
                 <p className="text-lg text-muted-foreground mb-4">
-                  Arsenal's win rate when you check in
+                  {stats.luckyCharmPercentage !== null
+                    ? "Arsenal's win rate when you check in"
+                    : "Check in to 10 completed matches to unlock"}
                 </p>
                 <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
                   <div>
