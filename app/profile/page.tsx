@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { BadgeGallery } from "@/components/profile/badge-gallery";
 
 interface UserProfile {
   user: {
@@ -92,9 +93,14 @@ export default function ProfilePage() {
     <div className="container mx-auto p-4 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-4xl font-bold">My Profile</h1>
-        <Button onClick={handleLogout} variant="outline">
-          Log Out
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => router.push("/settings")} variant="outline">
+            Settings
+          </Button>
+          <Button onClick={handleLogout} variant="outline">
+            Log Out
+          </Button>
+        </div>
       </div>
 
       {/* Profile Header */}
@@ -217,7 +223,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Predictions */}
-          <Card>
+          <Card className="mb-6">
             <CardHeader>
               <CardTitle>Prediction Stats</CardTitle>
             </CardHeader>
@@ -234,6 +240,12 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Badge Gallery */}
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-4">Badge Collection</h2>
+            <BadgeGallery limit={12} />
+          </div>
         </>
       )}
     </div>
