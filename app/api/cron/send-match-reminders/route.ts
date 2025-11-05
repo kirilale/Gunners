@@ -14,7 +14,7 @@ import { formatMatchDate } from "@/lib/utils";
  * {
  *   "crons": [{
  *     "path": "/api/cron/send-match-reminders",
- *     "schedule": "0 */3 * * *"
+ *     "schedule": "0 *\/3 * * *"
  *   }]
  * }
  */
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
           const batch = users.slice(i, i + batchSize);
 
           await Promise.allSettled(
-            batch.map(async (user) => {
+            batch.map(async (user: any) => {
               try {
                 // Check quiet hours
                 const currentHour = now.getHours();

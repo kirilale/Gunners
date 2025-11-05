@@ -1,10 +1,10 @@
-import Filter from 'bad-words';
+import { Filter } from 'bad-words';
 
 // Initialize profanity filter
 const filter = new Filter();
 
 // Add Arsenal-specific inappropriate terms
-const arsenalBlocklist = [
+const arsenalBlocklist: string[] = [
   // Add rival team offensive terms if needed
 ];
 

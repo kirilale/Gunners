@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
     // Permanently delete each user (cascade will delete all related data)
     const deleteResults = await Promise.allSettled(
-      usersToDelete.map(async (user) => {
+      usersToDelete.map(async (user: { id: string; email: string; username: string }) => {
         try {
           // Hard delete - Prisma cascade will delete all related records:
           // - CheckIns

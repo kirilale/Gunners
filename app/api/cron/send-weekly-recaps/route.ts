@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
       const batch = users.slice(i, i + batchSize);
 
       await Promise.allSettled(
-        batch.map(async (user) => {
+        batch.map(async (user: any) => {
           try {
             // Check quiet hours
             const currentHour = now.getHours();
@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
             ]);
 
             const predictionPoints = predictions.reduce(
-              (sum, p) => sum + (p.pointsEarned || 0),
+              (sum: number, p: any) => sum + (p.pointsEarned || 0),
               0
             );
 
@@ -177,7 +177,7 @@ export async function GET(request: NextRequest) {
             }
 
             // Format matches for email
-            const matches = weekMatches.map((match) => ({
+            const matches = weekMatches.map((match: any) => ({
               opponent: match.opponentName,
               result: match.result || 'TBD',
               score: `${match.arsenalScore ?? '-'} - ${match.opponentScore ?? '-'}`,
